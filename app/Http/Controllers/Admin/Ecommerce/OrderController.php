@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -12,7 +13,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::with(['user', 'items.product'])
+            ->latest()
+            ->get();
+        return view('dashboard.ecommerce.orders.index', compact('orders'));
     }
 
     /**

@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table id="dataTableExample" class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -45,8 +45,8 @@
                                     </td>
                                     <td>{{ $product->created_at->format('d M Y') }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                                        <a href="#" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editProductModal{{ $product->id }}">Edit</a>
+                                        <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal{{ $product->id }}">Delete</a>
                                     </td>
                                 </tr>
                             @empty
@@ -54,13 +54,22 @@
                                     <td colspan="8" class="text-center">No products found.</td>
                                 </tr>
                             @endforelse
-                            {{ $products->links() }}
                         </tbody>
+
                     </table>
                 </div>
-
+                {{-- ✅ Render pagination once below the table --}}
+                {{-- <div class="d-flex justify-content-center mt-3">
+                    {{ $products->links() }}
+                </div> --}}
             </div>
         </div>
     </div>
 </div>
+
+@foreach ($products as $product)
+    @include('dashboard.ecommerce.products.partials.edit-modal')
+    @include('dashboard.ecommerce.products.partials.delete-modal')
+@endforeach
+
 @endsection

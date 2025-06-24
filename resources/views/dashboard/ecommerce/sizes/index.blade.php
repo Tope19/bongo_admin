@@ -18,12 +18,12 @@
                         <h4 class="card-title">Product Sizes</h4>
                         <!-- Button trigger modal for size -->
                         <button type="button" class="btn btn-outline-primary mb-4" data-bs-toggle="modal"
-                            data-bs-target="#categoryModal">
+                            data-bs-target="#sizeModal">
                             + Add Size
                         </button>
                     </div>
 
-                    <table id="table_id" class="table table-striped display">
+                    <table id="dataTableExample" class="table table-striped display">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -51,8 +51,17 @@
                                     </td>
                                     <td>{{ $size->created_at->format('d M Y') }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                                        <!-- Edit Button -->
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                            data-bs-target="#editSizeModal{{ $size->id }}">
+                                            Edit
+                                        </button>
+
+                                        <!-- Delete Button -->
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteSizeModal{{ $size->id }}">
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                                 @empty
@@ -68,4 +77,11 @@
             </div>
         </div>
     </div>
+    <!-- Size Modal -->
+    @include('dashboard.ecommerce.sizes.partials.size-modal')
+    @foreach ($sizes as $size)
+        @include('dashboard.ecommerce.sizes.partials.edit-modal')
+        @include('dashboard.ecommerce.sizes.partials.delete-modal')
+    @endforeach
+
 @endsection

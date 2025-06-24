@@ -8,6 +8,9 @@
 <script src="{{ $admin_source }}/vendors/jquery.flot/jquery.flot.resize.js"></script>
 <script src="{{ $admin_source }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 <script src="{{ $admin_source }}/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="{{ asset('dashboard/vendors/datatables.net/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('dashboard/js/data-table.js') }}"></script>
+<script src="{{ asset('dashboard/vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
 <!-- End plugin js for this page -->
 
 <!-- inject:js -->

@@ -18,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(10);
+        $products = Product::with('category')->latest()->get();
         return view('dashboard.ecommerce.products.index', compact('products'));
     }
 
@@ -96,16 +96,34 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, Product $product)
     {
-        //
+        try{
+            $validated = $request->validate([
+                'name'    => 'required|string|max:255',
+                'sku'     => 'nullable|string|max:255',
+                'barcode' => 'nullable|string|max:255',
+                'status'  => 'required|boolean',
+            ]);
+
+            $product->update($validated);
+
+    return back()->with('success', 'Product updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            toastr()->error('Failed to update product.');
+            return back();
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return back()->with('success', 'Product deleted successfully.');
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Logistics;
 
-use App\Http\Controllers\Controller;
+use App\Models\PriceSetting;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PriceSettingController extends Controller
 {
@@ -12,7 +13,8 @@ class PriceSettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = PriceSetting::first();
+        return view('dashboard.logistics.price-setting.index', compact('settings'));
     }
 
     /**
@@ -50,9 +52,23 @@ class PriceSettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateSetting(Request $request)
     {
-        //
+        $request->validate([
+            'base_fare' => 'required|numeric|min:0',
+            'price_per_km' => 'required|numeric|min:0',
+            'price_per_kg' => 'required|numeric|min:0',
+            'min_price' => 'required|numeric|min:0',
+        ]);
+
+        $settings = PriceSetting::first();
+        if (!$settings) {
+            $settings = new PriceSetting();
+        }
+
+        $settings->update($request->only(['base_fare', 'price_per_km', 'price_per_kg', 'min_price']));
+
+        return back()->with('success', 'Price settings updated successfully.');
     }
 
     /**

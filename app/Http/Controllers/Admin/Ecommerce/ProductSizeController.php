@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
+use App\Models\Product;
 use App\Models\ProductSize;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class ProductSizeController extends Controller
 {
@@ -15,8 +18,10 @@ class ProductSizeController extends Controller
     {
         $sizes = ProductSize::with('product')
             ->latest()
-            ->paginate(10);
-        return view('dashboard.ecommerce.sizes.index', compact('sizes'));
+            ->get();
+        $products = Product::where('status', 1)
+            ->get();
+        return view('dashboard.ecommerce.sizes.index', compact('sizes', 'products'));
     }
 
     /**
@@ -56,7 +61,37 @@ class ProductSizeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $productSize = ProductSize::findOrFail($id);
+            if (!$productSize) {
+                toastr()->error('Product Size not found.');
+                return back();
+            }
+
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'nullable|exists:products,id',
+                'size' => 'nullable|string|max:255',
+                'price' => 'nullable|numeric',
+                'stock_quantity' => 'nullable|numeric',
+                'status' => 'nullable|integer|in:0,1',
+            ]);
+            if ($validator->fails()) {
+                toastr()->error($validator->errors()->first());
+                return back();
+            }
+
+            $data = $validator->validated();
+            $productSize->update($data);
+            DB::commit();
+            toastr()->success('Product Size updated successfully.');
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report_error($e);
+            toastr()->error('Failed to update product size.');
+            return back();
+        }
     }
 
     /**
@@ -64,6 +99,22 @@ class ProductSizeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $productSize = ProductSize::findOrFail($id);
+            if (!$productSize) {
+                toastr()->error('Product Size not found.');
+                return back();
+            }
+            $productSize->delete();
+            DB::commit();
+            toastr()->success('Product Size deleted successfully.');
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report_error($e);
+            toastr()->error('Failed to delete product size.');
+            return back();
+        }
     }
 }

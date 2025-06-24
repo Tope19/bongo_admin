@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TransactionHistoryController extends Controller
 {
@@ -12,7 +13,8 @@ class TransactionHistoryController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Payment::with('order.user')->latest()->get();
+        return view('dashboard.logistics.transactions.index', compact('transactions'));
     }
 
     /**
