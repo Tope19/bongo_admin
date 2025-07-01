@@ -94,15 +94,25 @@ class ProductImageController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'image_path' => 'nullable|image|max:2048',
-            'is_primary' => 'nullable|boolean',
+            'is_primary' => 'nullable',
+        ],[
+            'product_id.required' => 'The product field is required.',
+            'product_id.exists' => 'The selected product is invalid.',
+            'image_path.image' => 'The image must be an image.',
+            'image_path.max' => 'The image may not be greater than 2MB.',
+            // 'is_primary.boolean' => 'The is_primary field must be a boolean.',
         ]);
+
+        // convert is_primary to boolean
+        $is_primary = $request->has('is_primary') ? true : false;
+        // dd($is_primary);
 
         try {
             DB::beginTransaction();
 
             $productImage = ProductImage::findOrFail($id);
             $productImage->product_id = $request->product_id;
-            $productImage->is_primary = $request->boolean('is_primary');
+            $productImage->is_primary = $is_primary;
 
             if ($request->hasFile('image_path')) {
                 // Delete old image from storage
