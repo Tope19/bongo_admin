@@ -25,7 +25,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Replace Image (optional)</label>
-                    <input type="file" class="form-control" name="image">
+                    <input type="file" class="form-control" name="image_path">
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" name="is_primary" id="is_primary{{ $image->id }}" {{ $image->is_primary ? 'checked' : '' }}>
