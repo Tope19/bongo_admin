@@ -37,7 +37,33 @@ class ProductSizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|exists:products,id',
+                'size' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'stock_quantity' => 'required|numeric',
+            ]);
+            if ($validator->fails()) {
+                toastr()->error($validator->errors()->first());
+                return back();
+            }
+
+            $data = $validator->validated();
+            $data['status'] = 1;
+            ProductSize::create($data);
+            DB::commit();
+            toastr()->success('Product Size created successfully.');
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report_error($e);
+            toastr()->error('Failed to create product.');
+            return back();
+        }
+
+
     }
 
     /**
